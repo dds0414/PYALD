@@ -40,12 +40,6 @@ class ZhiHu:
             print k, r.headers[k]
 
     def get_captcha(self):
-        for i in range(100):
-            p_url = 'http://www.zhihu.com/captcha.gif?r=1470819316270&type=login'
-            pic = requests.get(p_url, stream=True, headers=self.header).content
-            f = open('image/' + str(i) + '1.jpg', 'wb')
-            f.write(pic)
-            f.close()
         t = str(int(time.time() * 1000))
         captcha_url = 'http://www.zhihu.com/captcha.gif?r=' + t + "&type=login"
         r = self.session.get(captcha_url, headers=self.header)
