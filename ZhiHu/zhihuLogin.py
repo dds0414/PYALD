@@ -7,10 +7,10 @@ from PIL import Image
 import os
 import json
 
+
 class Login:
     session = requests.session()
     url = "http://www.zhihu.com/"
-
     header = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36"}
 
@@ -18,8 +18,8 @@ class Login:
         try:
             self.session.cookies = cookielib.LWPCookieJar(filename="ZhiHu/cookies")
             self.session.cookies.load(ignore_discard=True)
-        except:
-            print("Cookie 未能加载")
+        except Exception, e:
+            print Exception, e
         self.username = username
         self.password = password
 
@@ -76,9 +76,10 @@ class Login:
             try:
                 # 不需要验证码直接登录成功
                 login_page = self.session.post(post_url, data=self.postdata, headers=self.header)
-                login_code = login_page.text
-                return_data = login_page.status, login_code
-            except:
+                login_code = json.loads(login_page.text)
+                return_data = login_code['msg']
+            except Exception, e:
+                print Exception, e
                 # 需要输入验证码后才能登录成功
                 self.postdata["captcha"] = self.get_captcha()
                 login_page = self.session.post(post_url, data=self.postdata, headers=self.header)
@@ -101,6 +102,5 @@ class Login:
 
 
 if __name__ == u"__main__":
-    print os.path.abspath("cookies")
-    # Z = ZhiHu("123207246@qq.com", "yang890414")
-    # Z.login()
+    Z = Login("123207246@qq.com", "yang890414")
+    Z.run()
