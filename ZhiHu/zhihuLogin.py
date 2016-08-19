@@ -16,7 +16,12 @@ class Login:
 
     def __init__(self, username, password):
         try:
-            self.session.cookies = cookielib.LWPCookieJar(filename="ZhiHu/cookies")
+            open("./ZhiHu/cookies", "wb")
+        except Exception, e:
+            print e
+
+        try:
+            self.session.cookies = cookielib.LWPCookieJar(filename="./ZhiHu/cookies")
             self.session.cookies.load(ignore_discard=True)
         except Exception, e:
             print Exception, e
@@ -56,7 +61,7 @@ class Login:
             im.show()
             im.close()
         except:
-            return (u'请到 %s 目录找到captcha.jpg 手动输入' % os.path.abspath('captcha.jpg'))
+            print (u'请到 %s 目录找到captcha.jpg 手动输入' % os.path.abspath('captcha.jpg'))
         captcha = raw_input("please input the captcha\n>")
         return captcha
 
@@ -73,18 +78,18 @@ class Login:
                 # print("邮箱登录 \n")
                 post_url = 'http://www.zhihu.com/login/email'
                 self.postdata["email"] = self.username
-            try:
-                # 不需要验证码直接登录成功
-                login_page = self.session.post(post_url, data=self.postdata, headers=self.header)
-                login_code = json.loads(login_page.text)
-                return_data = login_code['msg']
-            except Exception, e:
-                print Exception, e
+            # try:
+            #     # 不需要验证码直接登录成功
+            #     login_page = self.session.post(post_url, data=self.postdata, headers=self.header)
+            #     login_code = json.loads(login_page.text)
+            #     return_data = login_code['msg']
+            # except Exception, e:
+            #     print Exception, e
                 # 需要输入验证码后才能登录成功
-                self.postdata["captcha"] = self.get_captcha()
-                login_page = self.session.post(post_url, data=self.postdata, headers=self.header)
-                login_code = json.loads(login_page.text)
-                return_data = login_code['msg']
+            self.postdata["captcha"] = self.get_captcha()
+            login_page = self.session.post(post_url, data=self.postdata, headers=self.header)
+            login_code = json.loads(login_page.text)
+            return_data = login_code['msg']
         self.session.cookies.save()
         return return_data
 
